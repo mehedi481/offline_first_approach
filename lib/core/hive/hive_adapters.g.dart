@@ -21,7 +21,8 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       title: fields[13] as String?,
       description: fields[14] as String?,
       isCompleted: fields[15] as bool?,
-    )..isSynced = fields[16] as bool?;
+      isSynced: fields[16] as bool?,
+    );
   }
 
   @override
