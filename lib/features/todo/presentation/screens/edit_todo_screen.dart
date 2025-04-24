@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:offline_first_approach/features/todo/domain/models/todo_model.dart';
-import 'package:offline_first_approach/features/todo/presentation/providers/todo_providers.dart';
 
-class CreateTodoScreen extends ConsumerStatefulWidget {
-  const CreateTodoScreen({super.key});
+class EditTodoScreen extends ConsumerStatefulWidget {
+  final TodoModel todo;
+
+  const EditTodoScreen({super.key, required this.todo});
 
   @override
-  ConsumerState<CreateTodoScreen> createState() => _CreateTodoScreenState();
+  ConsumerState<EditTodoScreen> createState() => _EditTodoScreenState();
 }
 
-class _CreateTodoScreenState extends ConsumerState<CreateTodoScreen> {
+class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
   late TextEditingController titleController;
   late TextEditingController descriptionController;
 
   @override
   void initState() {
     super.initState();
-    titleController = TextEditingController();
-    descriptionController = TextEditingController();
+    titleController = TextEditingController(text: widget.todo.title);
+    descriptionController = TextEditingController(
+      text: widget.todo.description,
+    );
   }
 
   @override
@@ -31,7 +34,7 @@ class _CreateTodoScreenState extends ConsumerState<CreateTodoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Todo')),
+      appBar: AppBar(title: const Text('Edit Todo')),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -54,17 +57,15 @@ class _CreateTodoScreenState extends ConsumerState<CreateTodoScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Add the new todo to the provider or database
-                final newTodo = TodoModel(
+                // Update the todo in the provider or database
+                final updatedTodo = widget.todo.copyWith(
                   title: titleController.text,
                   description: descriptionController.text,
-                  isCompleted: false,
-                  isSynced: false,
                 );
-                ref.read(todoNotifierProvider.notifier).addTodo(newTodo);
-                Navigator.pop(context); // Go back to the previous screen
+                // Save the updated todo (replace with actual logic)
+                Navigator.pop(context, updatedTodo);
               },
-              child: const Text('Create Todo'),
+              child: const Text('Save Changes'),
             ),
           ],
         ),

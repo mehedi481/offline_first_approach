@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:offline_first_approach/core/constants.dart';
 import 'package:offline_first_approach/core/hive/hive_registrar.g.dart';
+import 'package:offline_first_approach/core/hive/sync_manager.dart';
 import 'package:offline_first_approach/features/todo/domain/models/todo_model.dart';
 import 'package:offline_first_approach/features/todo/presentation/screens/home_screen.dart';
 
@@ -11,21 +12,28 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapters();
   await Hive.openBox<TodoModel>(AppConstants.todoListBox);
-  runApp(ProviderScope(child: const MyApp()));
+
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Start monitoring connectivity for syncing
+    ref.read(syncManagerProvider).startMonitoring(ref);
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Offline First Todo App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
