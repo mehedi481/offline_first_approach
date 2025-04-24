@@ -46,7 +46,8 @@ class TodoRepositoryImpl implements ITodoRepository {
 
   @override
   Future<void> syncPendingTodos() async {
-    final unsynced = local.getTodos().where((e) => !e.isSynced!);
+    final unsynced =
+        local.getTodos().where((e) => e.isSynced == false).toList();
     for (final todo in unsynced) {
       print('Syncing todo: ${todo.title}'); // Debug print
       try {
